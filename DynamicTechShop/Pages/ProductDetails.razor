@@ -1,0 +1,41 @@
+﻿@page "/details/{id:int}"
+@using DynamicTechShop.Models
+
+@using static System.Net.WebRequestMethods
+@using System.Net.Http
+@using System.Text.Json
+@using DynamicTechShop.Database
+@inject HttpClient Http
+
+<h3>ProductDetails</h3>
+
+
+       <div class="d-flex card mt-3 ">
+            <img src="@product.ImageUrl" style="width:150px" />
+            <h1>@product.Name</h1>
+            <h2>$@product.Price</h2>
+            <h2>@product.Description</h2>
+            </div>
+
+@code {
+    List<ProductModel> productList;
+    private ProductModel? product;
+    [Parameter]
+    public int id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        productList = await Http.GetFromJsonAsync<List<ProductModel>>("sample-data/products.json");
+        product = productList.FirstOrDefault(p => p.Id == id);
+
+        base.OnInitialized();
+    }
+
+
+    // private ProductModel product = new();
+
+
+      
+    
+     
+}

@@ -1,0 +1,41 @@
+﻿@page "/checkout"
+@using Database
+@using DynamicTechShop.Models
+
+
+
+    @foreach (var product in ShoppingCartList.shoppingCart)
+    {
+        
+
+        <div class="d-flex card mt-3 ">
+            <h1>@product.Name</h1>
+            <h2>$@product.Price</h2>
+
+         
+        </div>
+    }
+<button class="btn btn-warning" @onclick="() => AddToOrderList()">Checkout!</button>
+    <p>Total Price : $@totalPrice </p>
+
+
+
+
+@code {
+    public double totalPrice;
+
+    public void CalculatePrice(double price)
+    {
+        foreach (var item in ShoppingCartList.shoppingCart)
+        {
+            totalPrice += item.Price;
+        }
+    }
+
+
+
+    public void AddToOrderList()
+    {
+        
+    }
+}

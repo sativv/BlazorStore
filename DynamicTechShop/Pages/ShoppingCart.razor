@@ -1,0 +1,38 @@
+﻿@page "/ShoppingCart"
+@using DynamicTechShop.Database
+@using DynamicTechShop.Models
+
+<h3>Your Cart</h3>
+
+
+@if (!ShoppingCartList.shoppingCart.Any())
+{
+
+    <h1>You have no products in your cart!</h1>
+
+} else
+{
+    @foreach (var product in ShoppingCartList.shoppingCart )
+    {
+        <div class="d-flex card mt-3 ">
+            <img src="@product.ImageUrl" style="width:150px" />
+            <h1>@product.Name</h1>
+            <h2>$@product.Price</h2>
+            <button class="btn btn-danger" @onclick="() => RemoveFromCart(product.Id)">Remove from Cart</button>
+            <a href="/checkout">
+             <button class="btn btn-primary" >Checkout</button>
+            </a>
+        </div>
+    }
+}
+
+@code {
+
+
+    public void RemoveFromCart(int id)
+    {
+        ProductModel itemToRemove = ShoppingCartList.shoppingCart.FirstOrDefault(p => p.Id == id);
+        ShoppingCartList.shoppingCart.Remove(itemToRemove);
+
+    }
+}

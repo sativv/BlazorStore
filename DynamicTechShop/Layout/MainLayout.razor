@@ -1,0 +1,29 @@
+﻿@inherits LayoutComponentBase
+@using DynamicTechShop.Database
+
+<div class="page">
+    <div class="sidebar">
+        <NavMenu />
+    </div>
+
+    <main>
+        <div class="top-row px-4">
+            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank" class="m-5">About</a>
+            <NavLink href="/shoppingcart">
+                <button id="cartButton" class="btn btn-warning">Your Shopping Cart</button>
+            </NavLink>
+        </div>
+
+        <article class="content px-4">
+            @Body
+        </article>
+    </main>
+</div>
+
+
+@code{
+    int itemCount = ShoppingCartList.shoppingCart.Count();
+
+    
+
+}

@@ -1,0 +1,83 @@
+﻿@page "/"
+
+@using DynamicTechShop.Models
+@using static System.Net.WebRequestMethods
+@using System.Net.Http
+@using System.Text.Json
+@using DynamicTechShop.Database
+@inject HttpClient Http
+
+<PageTitle>Products</PageTitle>
+
+<input id="inputField" type="text" @oninput="FilterProducts"  />
+
+
+@if (isFiltered)
+{
+    @foreach (var product in filteredList)
+    {
+        <div class="d-flex card mt-3 ">
+            <img src="@product.ImageUrl" style="width:150px" />
+            <h1>@product.Name</h1>
+            <h2>$@product.Price</h2>
+            <button class="btn btn-warning" @onclick="() => AddToCart(product.Id)">Add to Cart</button>
+        </div>
+    }
+} else
+{
+    @foreach (var product in productList)
+    {
+        <div class="d-flex card mt-3 ">
+            <img src="@product.ImageUrl" style="width:150px" />
+            <h1>@product.Name</h1>
+            <h2>$@product.Price</h2>
+            <button class="btn btn-warning" @onclick="() => AddToCart(product.Id)">Add to Cart</button>
+            <a href="/details/@product.Id">
+            <button class="btn btn-danger">Show Details</button>
+            </a>
+        </div>
+    }
+
+ 
+}
+
+
+
+
+@code {
+    List<ProductModel> productList;
+    List<ProductModel> filteredList;
+    bool isFiltered;
+
+    [Parameter]
+    public string filterString  { get; set; } 
+
+
+    public void AddToCart(int id )
+    {
+        ProductModel itemToAdd = productList.FirstOrDefault(p => p.Id == id);
+        ShoppingCartList.shoppingCart.Add(itemToAdd);
+
+    }
+    protected override async Task OnInitializedAsync()
+    {
+        // var json = await httpClient.GetStringAsync("products.json");
+        // productList = JsonSerializer.Deserialize<List<ProductModel>>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+        productList = await Http.GetFromJsonAsync <List<ProductModel>>("sample-data/products.json");
+    }
+    public void FilterProducts(ChangeEventArgs e)
+    {
+
+
+        if (string.IsNullOrEmpty(e.Value.ToString()))
+        {
+            isFiltered = false;
+            return;
+        }
+        filteredList = productList.Where(item => item.Name.ToLower().Contains(e.Value.ToString().ToLower())).ToList();
+        isFiltered = true;
+    }
+
+
+}
