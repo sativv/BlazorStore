@@ -7,15 +7,24 @@
 @using DynamicTechShop.Database
 @inject HttpClient Http
 
-<h3>ProductDetails</h3>
+<h3>@product.Name Details</h3>
 
 
-       <div class="d-flex card mt-3 ">
-            <img src="@product.ImageUrl" style="width:150px" />
-            <h1>@product.Name</h1>
-            <h2>$@product.Price</h2>
-            <h2>@product.Description</h2>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <img src="@product.ImageUrl" class="card-img-top product-image-details" alt="@product.Name">
+                <div class="card-body">
+                    <h5 class="card-title">@product.Name</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">$@product.Price</h6>
+                    <p class="card-text ">@product.Description</p>
+                </div>
             </div>
+        </div>
+    </div>
+</div>
+
 
 @code {
     List<ProductModel> productList;
@@ -23,12 +32,14 @@
     [Parameter]
     public int id { get; set; }
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnInitializedAsync()
+
     {
         productList = await Http.GetFromJsonAsync<List<ProductModel>>("sample-data/products.json");
         product = productList.FirstOrDefault(p => p.Id == id);
 
-        base.OnInitialized();
+        base.OnInitialized();
+
     }
 
 

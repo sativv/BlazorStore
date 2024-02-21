@@ -8,38 +8,62 @@
 @inject HttpClient Http
 
 <PageTitle>Products</PageTitle>
+<label>Search for a product: </label>
+<input id="inputField" type="text" @oninput="FilterProducts " class="mb-5"  />
+<label class="float-end">Items in cart: @ShoppingCartList.shoppingCart.Count()</label>
 
-<input id="inputField" type="text" @oninput="FilterProducts"  />
-
-
-@if (isFiltered)
+@if (isFiltered && productList != null)
 {
-    @foreach (var product in filteredList)
-    {
-        <div class="d-flex card mt-3 ">
-            <img src="@product.ImageUrl" style="width:150px" />
-            <h1>@product.Name</h1>
-            <h2>$@product.Price</h2>
-            <button class="btn btn-warning" @onclick="() => AddToCart(product.Id)">Add to Cart</button>
-        </div>
-    }
-} else
+    <div class="row">
+        @foreach (var product in filteredList)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                      <a href="/details/@product.Id" style="text-decoration:none;">
+                    <img src="@product.ImageUrl" class="card-img-top product-image" alt="@product.Name">
+                    <div class="card-body">                     
+                            <h5 class="card-title">@product.Name</h5>                     
+                        <p class="card-text">$@product.Price</p>
+                    </div>
+                    </a>
+                    <div class="card-footer">
+                        <button class="btn btn-warning btn-block" @onclick="() => AddToCart(product.Id)">Add to Cart</button>
+          
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+else    
 {
-    @foreach (var product in productList)
-    {
-        <div class="d-flex card mt-3 ">
-            <img src="@product.ImageUrl" style="width:150px" />
-            <h1>@product.Name</h1>
-            <h2>$@product.Price</h2>
-            <button class="btn btn-warning" @onclick="() => AddToCart(product.Id)">Add to Cart</button>
-            <a href="/details/@product.Id">
-            <button class="btn btn-danger">Show Details</button>
-            </a>
-        </div>
-    }
+    <div class="row">
+        @foreach (var product in productList)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <a href="/details/@product.Id" style="text-decoration:none;">
+                    <img src="@product.ImageUrl" class="card-img-top product-image" alt="@product.Name">
+                    <div class="card-body">
+                       
+                        <h5 class="card-title">@product.Name</h5>
+                       
+                        <p class="card-text">$@product.Price</p>
+                    </div>
+                    </a>
+                    <div class="card-footer">
+                        <button class="btn btn-warning btn-block" @onclick="() => AddToCart(product.Id)">Add to Cart</button>
+                        
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+
 
  
-}
+
 
 
 
@@ -48,6 +72,7 @@
     List<ProductModel> productList;
     List<ProductModel> filteredList;
     bool isFiltered;
+
 
     [Parameter]
     public string filterString  { get; set; } 
@@ -61,11 +86,13 @@
     }
     protected override async Task OnInitializedAsync()
     {
+        productList = await Http.GetFromJsonAsync <List<ProductModel>>("sample-data/products.json");
         // var json = await httpClient.GetStringAsync("products.json");
         // productList = JsonSerializer.Deserialize<List<ProductModel>>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
-        productList = await Http.GetFromJsonAsync <List<ProductModel>>("sample-data/products.json");
     }
+
+ 
     public void FilterProducts(ChangeEventArgs e)
     {
 
@@ -78,6 +105,8 @@
         filteredList = productList.Where(item => item.Name.ToLower().Contains(e.Value.ToString().ToLower())).ToList();
         isFiltered = true;
     }
+
+    
 
 
 }

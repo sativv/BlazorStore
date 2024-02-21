@@ -15,7 +15,7 @@
          
         </div>
     }
-<button class="btn btn-warning" @onclick="() => AddToOrderList()">Checkout!</button>
+<button class="btn btn-warning" @onclick="AddToOrderList">Checkout!</button>
     <p>Total Price : $@totalPrice </p>
 
 
@@ -24,7 +24,13 @@
 @code {
     public double totalPrice;
 
-    public void CalculatePrice(double price)
+    protected override void OnInitialized()
+    {
+        CalculatePrice();
+        base.OnInitialized();
+    }
+
+    public void CalculatePrice()
     {
         foreach (var item in ShoppingCartList.shoppingCart)
         {
@@ -36,6 +42,16 @@
 
     public void AddToOrderList()
     {
-        
+
+        OrderModel orderToAdd = new OrderModel()
+        {
+            Price = totalPrice,
+            OrderDate = DateTime.Now,
+        };
+        OrderList.orders.Add(orderToAdd);
+
+  
+      
+
     }
 }
